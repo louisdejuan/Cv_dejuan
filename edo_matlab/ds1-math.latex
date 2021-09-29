@@ -1,0 +1,79 @@
+\documentclass{article}
+\begin{document}
+$E$ est l'esapce des polynomes dans $R$ de degr\'e $\le 3$.
+Une base est donc: 
+$$
+{1,x,x^2,x^3}
+$$
+Tout polynomes P qui appartenant \'a E s'\'ecrit:
+$$
+P(x) = \alpha_0 * 1 + \alpha_1 * x + \alpha_2 * x^2 + \alpha_3 * x^3
+$$
+le tuple $(\alpha_0,\alpha_1,\alpha_2,\alpha_3)$ sont les composantes de P dans E sur la base $vect(1,x,x^2,x^3)$. 
+
+E est une espace vectoriel. 
+
+les ensembles suivants : 
+\begin{itemize}
+\item $K = {P \in E | P(2)=P(3)=0}$ est l'ensemble des polynomes de degré 3 ayant pour racine 2 et 3. Il s'écrit facilement de la fa\c con suivante: 
+$$
+\lambda_0 *(x-2)^2*(x-3) + \lambda_1 * (x-3)^2*(x-2)
+$$
+Le polynome $(x-2)*(x-3)$  peut s'écrire:
+$$
+(x-2)^2*(x-3) - (x-3)^2*(x-2) = \\
+(x-2)(x-3)(x-2-x+3)=\\
+(x-2)(x-3)
+$$
+Le polynome $(x-2)*(x-3)*(x-1)$  peut s'écrire:
+$$
+(x-2)*(x-3)*(x-1)=2(x-2)^2*(x-3)-(x-3)^2(x-2)
+$$
+donc la base de F est :
+$$
+(x-2)*(x-3);(x-2)(x-3)(x-1)
+$$
+
+il est donc une combinaison lin\'eaire de v1 et v2.
+\item $F = {P \in E | P'(1)=P(1)=P(3)=0}$ est l'ensemble des polynomes de degr\'e 3 ayant pour racine 1 double et 3. Il s'écrit facilement de la fa\c con suivante: 
+$$
+\nu_0 *(x-1)^2*(x-3) 
+$$
+\item $G = {P \in E | P'(1)=P(1)=P(2)=0}$ est l'ensemble des polynomes de degr\'e 3 ayant pour racine 1 double et 2. Il s'écrit facilement de la fa\c con suivante: 
+$$
+\mu_0 *(x-1)^2*(x-2) 
+$$
+\item $ H= {P \in E | P(1)=P'(1)=0}$ est l'ensemble des polynomes de degr\'e 3 ayant pour racine 1 double. Il s'\'ecrit facilement de la fa\c con suivante: 
+$$
+\beta_0 *(x-1)^3 + \beta_1 * (x-1)^2
+$$
+
+\end{itemize}
+Il faut trouver $(\lambda_0,\lambda_1,\beta_0,\beta_1)$ tel que:
+$$
+x^3 = \lambda_0 * (x-2)(x-3) + \lambda_1 *( x-2)(x-3)(x-1) + \beta_0 *(x-1)^2(x-3) + \beta_1*(x-1)^2(x-2)
+$$
+\'egalisons les terme \'a terme entre eux (cela prend trop de temps) :
+donc, les deux termes sont égaux pour tout $x$, choisissons des $x$ singuliers faciles \'a calculer!\newline
+pour $x=1$
+$$
+1 = 2 \lambda_0 
+$$
+pour $x=2$
+$$
+8 = -\beta_0 
+$$
+pour $x=3$
+$$
+27 = 4\beta_1
+$$
+des deux derni\`eres \'equations:
+$$
+21 = 7\beta_0, \
+\beta_0 = 3
+$$
+pour $x=0$
+$$ 
+\lambda_1 = \frac{9}{4}  
+$$
+\end{document}

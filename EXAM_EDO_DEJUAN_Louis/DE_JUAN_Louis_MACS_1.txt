@@ -1,0 +1,39 @@
+DE JUAN Louis MACS 1
+
+ci_joint mon dossier EXAM 2020 
+
+j'ai utilisé l'algorithme de newton pour résoudre l'équation d'ordre 2 sur yn+1 à chaque pas de temps
+l'algorithme d'euler modifié s'appelle euler explicite , mais c'est bien un algorithme d'euler explicite modifié avec le calcul de y_aux
+
+
+pour lancer la compilation :
+
+make euler
+
+
+pour lancer le programme :
+
+./euler donnees resultat
+
+
+pour voir le resultat (les courbes) ouvrir gnuplot et lancer la commande :
+
+load 'plot_solution"
+
+(les commandes gnuplot sont écrites dans mon fichier plot_solution)
+
+
+
+pour N=500  
+erreur_exp= 0.000108
+erreur_imp= 0.012475
+
+pour N=1000
+erreur_exp=0.000027
+erreur_imp=0.006250 
+
+
+rapport 2 pour euler imp 
+rapport 4 pour euler exp modifie
+
+donc euler imp est d'ordre 1 et euler exp modifie est d'ordre 2
