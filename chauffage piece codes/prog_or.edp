@@ -1,0 +1,128 @@
+
+
+func real f (real z){
+
+
+   
+    real T1 = 20.;
+    real T2 = 40.;
+    //cout << "ca cest z:" << z << endl;
+    
+
+    
+        //radiateur a gauche
+
+        border G1(t=0.,z  ){x=0; y=t;label=1;}
+        border G2(t=z,z+1  ){x=0; y=t;label=2;}
+        border G3(t=z+1,5. ){x=0; y=t;label=1;}
+        border G4(t=0., 2. ){x=t; y=5;label=1;}
+        border G5(t=2., 3. ){x=t; y=5;label=3;}
+        border G6(t=3.,5.){x=t; y=5;label=1;}
+        border G7(t=0.,5. ){x=5.; y=5-t;label=1;}
+        border G8(t=0.,5. ){x=5-t;y=0;label=1;}
+ 
+        mesh Th = buildmesh(G1(-10) + G2(-10)+ G3(-10) + G4(-20)+ G5(-10) + G6(-20) + G7(-50) + G8(-50));
+
+        //radiateur a droite
+
+        // border G1(t=0.,5  ){x=0; y=t;label=1;}
+        // border G4(t=0., 2. ){x=t; y=5;label=1;}
+        // border G5(t=2., 3. ){x=t; y=5;label=3;}
+        // border G6(t=3.,5.){x=t; y=5;label=1;}
+        // border G7(t=0.,z ){x=5.; y=5-t;label=1;}
+        // border G2(t=z,z+1  ){x=5; y=5-t;label=2;}
+        // border G3(t=z+1,5. ){x=5; y=5-t;label=1;}
+        // border G8(t=0.,5. ){x=5-t;y=0;label=1;}
+ 
+        // mesh Th = buildmesh(G1(-50)  + G4(-20)+ G5(-10) + G6(-20) + G7(-30)+ G2(-10)+ G3(-10) + G8(-50));
+
+        //radiateur en bas
+
+        // border G1(t=0.,5 ){x=0; y=t;label=1;}
+        // border G4(t=0., 2. ){x=t; y=5;label=1;}
+        // border G5(t=2., 3. ){x=t; y=5;label=3;}
+        // border G6(t=3.,5.){x=t; y=5;label=1;}
+        // border G7(t=0.,5. ){x=5.; y=5-t;label=1;}
+
+        // border G8(t=0.,z ){x=5-t;y=0;label=1;}
+        // border G2(t=z,z+1  ){x=5-t; y=0;label=2;}
+        // border G3(t=z+1,5. ){x=5-t; y=0;label=1;}
+
+        // mesh Th = buildmesh(G1(-50)  + G4(-20)+ G5(-10) + G6(-20) + G7(-30)+ G2(-10)+ G3(-10) + G8(-50));
+
+    fespace Vh(Th, P1); //P1 conforming triangular FEM
+    Vh u, w;
+
+        solve Laplace(u, w)
+        = int2d(Th)(
+        dx(u)*dx(w)
+        + dy(u)*dy(w)
+        )
+        + on(2, u=T2)
+        + on(3, u  =T1)
+        ;
+
+    real tmean = int2d(Th)(u) / 25.;
+    //cout << "moyenne:" << tmean << endl;
+
+    
+
+    return tmean ;
+
+
+}
+
+
+
+real tau=(1+sqrt(5))/2;
+real azero=0.5;
+real bzero=3.5;
+real eps=abs(azero-bzero);
+real aprim;
+real bprim;
+real qa;
+real qb;
+real compteur=0;
+
+
+while (eps>0.05){
+
+    aprim=azero+(1./(tau^2))*(bzero-azero);
+    bprim=azero+(1./tau)*(bzero-azero);
+
+    qa=f(aprim);
+    qb=f(bprim);
+
+
+    if(qa<qb)
+        {
+            azero=aprim;
+        
+        }
+    if(qa>qb)
+        {
+            bzero=bprim;
+        }
+
+    if(qb==qa)
+        {
+            azero=aprim;
+            bzero=bprim;
+
+        }
+
+    eps=abs(bzero-azero);
+    compteur=compteur+1;
+    
+}
+
+real c =abs(bzero+azero)/2;
+real maxvalue=f(c);
+
+cout << "compteur " << compteur << endl;
+cout << "position " << c <<endl;
+cout << "Temperature Moyenne " << maxvalue << endl;
+
+
+
+

@@ -1,0 +1,253 @@
+//
+// Création de la mesh
+//          G4     G5      G6
+//     ---------======-----------
+//     |                        |
+//  G3 |                        |
+//     ||                       |  G7
+//  G2 ||                       |
+//     |                        | 
+//  G1 |                        |
+//     --------------------------
+//              G8
+//
+//
+//    equation de la chaleur D^2(u)=0
+//        G1,G3,G4,G6,G7,G8 D(u).n = 0  (label=1)
+//        G2 u=T1                       (label=2)
+//        G5 u=T2                       (label=3)
+//
+// taille G1=G3=G4=G6=2 
+// taille G2=G5=1
+// taille G8=G7=5 (somme de G1+G2+G3)
+
+func real f (real a,real b ){
+real T1 = 20.;
+real T2 = 40.;
+
+real[int] colorhsv=[ // Color hsv model
+    4./6., 1 , 0.5, // Dark blue
+    4./6., 1 , 1, // Blue
+    5./6., 1 , 1, // Magenta
+    1, 1. , 1, // Red
+    1, 0.5 , 1 // Light red
+    ]; 
+
+//faire 
+border G1(t=0.,2.  ){x=0; y=t;label=2;}
+border G2(t=0.,1.5  ){x=t; y=2;label=1;}
+border G3(t=2.,2.2  ){x=1.5; y=t;label=1;}
+border G4(t=0.,1.5  ){x=1.5-t; y=2.2;label=1;}
+border G5(t=2.2,4.4  ){x=0; y=t;label=1;}
+border G6(t=0.,1.5 ){x=t; y=4.4;label=1;}
+border G7(t=0.,1.5 ){x=1.5; y=4.4-t;label=1;}
+border G8(t=1.5, 2. ){x=t; y=2.9;label=1;}
+border G9(t=2.9,3.1 ){x=2.; y=t;label=1;}
+border G10(t=0.,0.3 ){x=2-t;y=3.1;label=1;}
+border G11(t=3.1,7.1 ){x=1.7; y=t;label=1;}
+border G12(t=0.,0.2 ){x=1.7-t;y=7.1;label=1;}
+border G13(t=0.,2.5 ){x=1.5; y=7.1-t;label=1;}
+border G14(t=0.,1.5  ){x=1.5-t; y=4.6;label=1;}
+border G15(t=4.6,5.6 ){x=0; y=t;label=1;}
+border G16(t=5.6,6.6 ){x=0; y=t;label=2;}
+border G17(t=6.6,8 ){x=0; y=t;label=1;}
+border G18(t=0.,1.5 ){x=t; y=8.;label=1;}
+border G19(t=1.5,3. ){x=t; y=8.;label=2;}
+border G20(t=3.,6. ){x=t; y=8.;label=1;}
+border G21(t=0.,a ){x=6.; y=8-t;label=1;}
+//radiateur 1
+border GR1(t=a,a+1 ){x=6.; y=8-t;label=3;}
+
+border G22(t=a+1,8. ){x=6.; y=8-t;label=1;}
+border G23(t=0.,1.  ){x=6-t; y=0.;label=2;}
+border G24(t=1.,2.  ){x=6-t; y=0.;label=1;}
+border G25(t=0.,3.1  ){x=4.; y=t;label=1;}
+border G26(t=0.,1.2  ){x=4-t; y=3.1;label=1;}
+border G27(t=0.,0.2 ){x=2.8; y=3.1-t;label=1;}
+border G28(t=2.8, 3.8 ){x=t; y=2.9;label=1;}
+border G29(t=0.,2.9){x=3.8; y=2.9-t;label=1;}
+border G30(t=0.,b  ){x=3.8-t; y=0.;label=1;}
+//radiateur 2
+
+border GR2(t=b,b+1){x=3.8-t; y=0.;label=3;}
+border G31(t=b+1,3.8  ){x=3.8-t; y=0.;label=1;}
+
+
+
+
+mesh Th = buildmesh(G1(-20) + 
+                    G2(-15)+ G3(-4) + G4(-15)+ G5(-20) 
+                    + G6(-15) + G7(-15) + G8(-10)+ G9(-4)
+                    + G10(-15) + G11(-40) + G12(-4)+ G13(-25)
+                    + G14(-15) + G15(-10) + G16(-10)+ G17(-20)
+                    + G18(-20) + G19(-20) + G20(-20)+ G21(-20)
+                    + GR1(-10) + G22(-40) + G23(-10)+ G24(-10)
+                    + G25(-30) + G26(-15) + G27(-4)+ G28(-10)
+                    + G29(-30) + G30(-15) + GR2(-10)+ G31(-15)
+
+                    );
+//plot(Th, wait=true);
+
+// Fespace
+fespace Vh(Th, P1); //P1 conforming triangular FEM
+Vh u, w;
+
+// Solve
+solve Laplace(u, w)
+= int2d(Th)(
+dx(u)*dx(w)
++ dy(u)*dy(w)
+)
++ on(2, u=T1)
++ on(3, u=T2)
+;
+
+// Plot
+//plot(u, value=true, fill=true, wait=true, hsv=colorhsv);
+//Plot u
+
+// Temperature Moyenne
+real tmean = int2d(Th)(u) / 45.5;
+//cout << "Temperature Moyenne " << tmean << endl;
+  
+// Save mesh
+//savemesh(Th,"equation_de_chaleur.msh");
+return tmean;
+}
+
+
+//real valtest=f(1.5,1.1);
+int kmax=30;
+
+
+real tau=(1+sqrt(5))/2;
+
+real azero=0.5;
+real bzero=6.5;
+real czero=0.5;
+real dzero=2.5;
+real eps;
+real aprim;
+real bprim;
+real cprim;
+real dprim;
+real qa;
+real qb;
+real qc;
+real qd;
+real compteur=0;
+
+real val1=2;
+real val2=2;
+int k=0; 
+real [int] valt1(kmax);         //La taille du tableau
+real [int] valt2(kmax);
+
+while (k<5){
+
+
+
+
+            azero=0.5;
+            bzero=6.5;
+            eps=abs(azero-bzero);
+
+            while (eps>0.1){
+
+                aprim=azero+(1./(tau^2))*(bzero-azero);
+                bprim=azero+(1./tau)*(bzero-azero);
+                cout << "aprim" << aprim <<endl;
+                cout << "bprim "<< bprim <<endl;
+
+                qa=f(aprim,val2);
+                qb=f(bprim,val2);
+
+
+                if(qa<qb)
+                    {
+                        azero=aprim;
+                    
+                    }
+                if(qa>qb)
+                    {
+                        bzero=bprim;
+                    }
+
+                if(qb==qa)
+                    {
+                        azero=aprim;
+                        bzero=bprim;
+
+                    }
+                
+
+                eps=abs(bzero-azero);
+                compteur=compteur+1;
+                //cout << "compteur" <<compteur<< endl;
+                
+            }
+
+
+
+              val1=abs(bzero+azero)/2;
+              cout<< "valeur1 " << val1 <<endl; 
+              valt1[k]=val1;
+
+            czero=0.5;
+            dzero=2.5;
+            eps=abs(czero-dzero);    
+            while (eps>0.1){
+                
+                //cout << "rentrer dans 2eme boucle" << endl;
+                cprim=czero+(1./(tau^2))*(dzero-czero);
+                dprim=czero+(1./tau)*(dzero-czero);
+                cout << "cprim" << cprim <<endl;
+                cout << "dprim "<< dprim <<endl;
+                
+
+                qc=f(val1,cprim);
+                qd=f(val1,dprim);
+
+
+                if(qc<qd)
+                    {
+                        czero=cprim;
+                    
+                    }
+                if(qc>qd)
+                    {
+                        dzero=dprim;
+                    }
+
+                if(qc==qd)
+                    {
+                        czero=cprim;
+                        dzero=dprim;
+
+                    }
+
+                eps=abs(czero-dzero);
+                compteur=compteur+1;
+                //cout << compteur << endl;
+            }
+
+            val2=abs(czero+dzero)/2;
+            valt2[k]=val2;
+            
+
+
+
+
+k=k+1;
+cout << "k" << k <<endl;
+}
+
+
+{ // File for gnuplot
+    ofstream gnu("plot.gp");
+    for (int i = 0; i < kmax; i++)
+        gnu << valt1[i] << " " << valt2[i] << "" << f(valt1[i],valt2[i]) << endl;
+        //gnu << ztableau[i] << " " << enertableau[i] << endl;
+}
+
+exec("echo 'plot \"plot.gp\" w l \n pause 5 \n set term postscript \n set output \"gnuplot.eps\" \n replot \n quit' | gnuplot");

@@ -1,0 +1,179 @@
+
+// Création de la mesh
+//          G4     G5      G6
+//     ---------======-----------
+//     |                        |
+//  G3 |                        |
+//     ||                       |  G7
+//  G2 ||                       |
+//     |                        | 
+//  G1 |                        |
+//     --------------------------
+//              G8
+//
+//
+//    equation de la chaleur D^2(u)=0
+//        G1,G3,G4,G6,G7,G8 D(u).n = 0  (label=1)
+//        G2 u=T1                       (label=2)
+//        G5 u=T2                       (label=3)
+//
+// taille G1=G3=G4=G6=2 
+// taille G2=G5=1
+// taille G8=G7=5 (somme de G1+G2+G3)
+
+int n=50;
+real T1 = 20.;
+real T2 = 40.;
+real z;
+real h=3./n;
+
+real [int] moytableau(n);         //La taille du tableau
+real [int] ztableau(n);
+real [int] enertableau(n);
+   //Déclaration du tableau
+
+real[int] colorhsv=[ // Color hsv model
+    4./6., 1 , 0.5, // Dark blue
+    4./6., 1 , 1, // Blue
+    5./6., 1 , 1, // Magenta
+    1, 1. , 1, // Red
+    1, 0.5 , 1 // Light red
+    ];   
+
+
+
+
+
+for(int i = 0; i <50; ++i)
+    {
+       //faire 
+        z=0.5 + i*h ;
+
+        //radiateur a gauche
+
+        // border G1(t=0.,z  ){x=0; y=t;label=1;}
+        // border G2(t=z,z+1  ){x=0; y=t;label=2;}
+        // border G3(t=z+1,5. ){x=0; y=t;label=1;}
+        // border G4(t=0., 2. ){x=t; y=5;label=1;}
+        // border G5(t=2., 3. ){x=t; y=5;label=3;}
+        // border G6(t=3.,5.){x=t; y=5;label=1;}
+        // border G7(t=0.,5. ){x=5.; y=5-t;label=1;}
+        // border G8(t=0.,5. ){x=5-t;y=0;label=1;}
+ 
+        // mesh Th = buildmesh(G1(-10) + G2(-10)+ G3(-10) + G4(-20)+ G5(-10) + G6(-20) + G7(-50) + G8(-50));
+
+        //radiateur a droite
+
+        border G1(t=0.,5  ){x=0; y=t;label=1;}
+        border G4(t=0., 2. ){x=t; y=5;label=1;}
+        border G5(t=2., 3. ){x=t; y=5;label=3;}
+        border G6(t=3.,5.){x=t; y=5;label=1;}
+        border G7(t=0.,z ){x=5.; y=5-t;label=1;}
+        border G2(t=z,z+1  ){x=5; y=5-t;label=2;}
+        border G3(t=z+1,5. ){x=5; y=5-t;label=1;}
+        border G8(t=0.,5. ){x=5-t;y=0;label=1;}
+ 
+        mesh Th = buildmesh(G1(-50)  + G4(-20)+ G5(-10) + G6(-20) + G7(-30)+ G2(-10)+ G3(-10) + G8(-50));
+
+        //radiateur en bas
+
+        // border G1(t=0.,5 ){x=0; y=t;label=1;}
+        // border G4(t=0., 2. ){x=t; y=5;label=1;}
+        // border G5(t=2., 3. ){x=t; y=5;label=3;}
+        // border G6(t=3.,5.){x=t; y=5;label=1;}
+        // border G7(t=0.,5. ){x=5.; y=5-t;label=1;}
+
+        // border G8(t=0.,z ){x=5-t;y=0;label=1;}
+        // border G2(t=z,z+1  ){x=5-t; y=0;label=2;}
+        // border G3(t=z+1,5. ){x=5-t; y=0;label=1;}
+        
+ 
+        // mesh Th = buildmesh(G1(-50)  + G4(-20)+ G5(-10) + G6(-20) + G7(-50)+ G2(-10)+ G3(-20) + G8(-20));
+
+        //radiateur en haut a gauche
+
+        // border G1(t=0.,5  ){x=0; y=t;label=1;}
+        // border G4(t=0., z ){x=t; y=5;label=1;}
+        // border G2(t=z,z+1  ){x=t; y=5;label=2;}
+        // border G3(t=z+1,2 ){x=t; y=5;label=1;}
+      
+        // border G5(t=2., 3. ){x=t; y=5;label=3;}
+        // border G6(t=3.,5.){x=t; y=5;label=1;}
+        // border G7(t=0.,5. ){x=5.; y=5-t;label=1;}
+        // border G8(t=0.,5. ){x=5-t;y=0;label=1;}
+ 
+        // mesh Th = buildmesh(G1(-50) + G4(-5)+ G2(-10)+ G3(-5) + G5(-10) + G6(-20) + G7(-50) + G8(-50));
+
+        //radiateur en haut a droite
+        // border G1(t=0.,5  ){x=0; y=t;label=1;}
+        // border G4(t=0., 2 ){x=t; y=5;label=1;}
+
+      
+        // border G5(t=2.,3. ){x=t; y=5;label=3;}
+        // border G6(t=3.,z){x=t; y=5;label=1;}
+
+        // border G2(t=z,z+1  ){x=t; y=5;label=2;}
+
+        // border G3(t=z+1,5. ){x=t; y=5;label=1;}
+        
+        // border G7(t=0.,5. ){x=5.; y=5-t;label=1;}
+        // border G8(t=0.,5. ){x=5-t;y=0;label=1;}
+ 
+        // mesh Th = buildmesh(G1(-50) + G4(-5)+ G5(-10) + G2(-10)+ G3(-5)  + G6(-20) + G7(-50) + G8(-50));
+
+        
+        //plot(Th, wait=true);
+
+        // Fespace
+        fespace Vh(Th, P1); //P1 conforming triangular FEM
+        Vh u, w;
+
+        // Solve
+        solve Laplace(u, w)
+        = int2d(Th)(
+        dx(u)*dx(w)
+        + dy(u)*dy(w)
+        )
+        + on(2, u=T2)
+        + on(3, u  =T1)
+        ;
+
+        // Plot
+        if(i==48){
+        plot(u, value=true, fill=true, wait=true, hsv=colorhsv); //Plot u
+        }
+        // Temperature Moyenne
+        real tmean = int2d(Th)(u) / 25.;
+        // Energie Minimale
+        real ener = 1./2. * int2d(Th)(dx(u)*dx(u));
+
+        moytableau(i)=tmean;
+        ztableau(i)=z;
+        enertableau(i) = ener; 
+        
+        cout << "Temperature Moyenne " << tmean << endl;
+        cout << "Energie Minimale " << ener << endl;
+  
+        // Save mesh
+        //savemesh(Th,"equation_de_chaleur.msh"); 
+       
+
+    }
+
+
+//plot([ztableau,moytableau],value=true);
+//plot([ztableau,enertableau],value=true);
+
+{ // File for gnuplot
+    ofstream gnu("plot.gp");
+    for (int i = 0; i < n; i++)
+        gnu << ztableau[i] << " " << moytableau[i] << endl;
+        //gnu << ztableau[i] << " " << enertableau[i] << endl;
+}
+
+exec("echo 'plot \"plot.gp\" w l \n pause 5 \n set term postscript \n set output \"gnuplot.eps\" \n replot \n quit' | gnuplot");
+
+
+//plot([ztableau,enertableau]);
+
+

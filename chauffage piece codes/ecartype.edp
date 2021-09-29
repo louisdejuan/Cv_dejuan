@@ -1,0 +1,230 @@
+func real f (real z){
+
+    real T1 = 20.;
+    real T2 = 40.;
+    real zcopy;
+
+    real[int] colorhsv=[ // Color hsv model
+    4./6., 1 , 0.5, // Dark blue
+    4./6., 1 , 1, // Blue
+    5./6., 1 , 1, // Magenta
+    1, 1. , 1, // Red
+    1, 0.5 , 1 // Light red
+    ];  
+
+
+    cout << "ca cest z:" << z << endl;
+
+
+    if (z<=0.5)
+        {
+
+        zcopy=z+3.;
+
+        //radiateur en haut a droite
+        border G1(t=0.,5  ){x=0; y=t;label=1;}
+        border G4(t=0., 2 ){x=t; y=5;label=1;}
+        border G5(t=2.,3. ){x=t; y=5;label=3;}
+        border G6(t=3.,zcopy){x=t; y=5;label=1;}
+        border G2(t=zcopy,zcopy+1  ){x=t; y=5;label=2;}
+        border G3(t=zcopy+1,5. ){x=t; y=5;label=1;}
+        border G7(t=0.,5. ){x=5.; y=5-t;label=1;}
+        border G8(t=0.,5. ){x=5-t;y=0;label=1;}
+    
+        mesh Th = buildmesh(G1(-50) + G4(-5)+ G5(-10) + G2(-10)+ G3(-5)  + G6(-20) + G7(-50) + G8(-50));
+
+        fespace Vh(Th, P1); //P1 conforming triangular FEM
+        Vh u, w;
+
+            solve Laplace(u, w)
+            = int2d(Th)(
+            dx(u)*dx(w)
+            + dy(u)*dy(w)
+            )
+            + on(2, u=T2)
+            + on(3, u  =T1)
+            ;
+
+        real ecartype=sqrt(abs((int2d(Th)(u*u)/25.)-((int2d(Th)(u)/25.)*(int2d(Th)(u))/25.)));
+        //cout << "moyenne:" << tmean << endl;
+        plot(u, value=true, fill=true, wait=true, hsv=colorhsv); 
+        return ecartype;   
+
+        }
+    
+    if (0.5<z){
+        if(z<=3.5){
+           
+            //radiateur a droite
+
+            border G1(t=0.,5  ){x=0; y=t;label=1;}
+            border G4(t=0., 2. ){x=t; y=5;label=1;}
+            border G5(t=2., 3. ){x=t; y=5;label=3;}
+            border G6(t=3.,5.){x=t; y=5;label=1;}
+            border G7(t=0.,z ){x=5.; y=5-t;label=1;}
+            border G2(t=z,z+1  ){x=5; y=5-t;label=2;}
+            border G3(t=z+1,5. ){x=5; y=5-t;label=1;}
+            border G8(t=0.,5. ){x=5-t;y=0;label=1;}
+    
+            mesh Th = buildmesh(G1(-50)  + G4(-20)+ G5(-10) + G6(-20) + G7(-30)+ G2(-10)+ G3(-10) + G8(-50));
+
+            fespace Vh(Th, P1); //P1 conforming triangular FEM
+            Vh u, w;
+
+                solve Laplace(u, w)
+                = int2d(Th)(
+                dx(u)*dx(w)
+                + dy(u)*dy(w)
+                )
+                + on(2, u=T2)
+                + on(3, u  =T1)
+                ;
+
+            real ecartype=sqrt(abs((int2d(Th)(u*u)/25.)-((int2d(Th)(u)/25.)*(int2d(Th)(u))/25.)));
+            //cout << "moyenne:" << tmean << endl;
+            //plot(u, value=true, fill=true, wait=true, hsv=colorhsv);
+            return ecartype;
+            
+        }
+    }
+    if (3.5<z){
+        if(z<=6.5){
+
+            zcopy=z-3.;
+            //radiateur en bas
+
+            border G1(t=0.,5 ){x=0; y=t;label=1;}
+            border G4(t=0., 2. ){x=t; y=5;label=1;}
+            border G5(t=2., 3. ){x=t; y=5;label=3;}
+            border G6(t=3.,5.){x=t; y=5;label=1;}
+            border G7(t=0.,5. ){x=5.; y=5-t;label=1;}
+
+            border G8(t=0.,zcopy ){x=5-t;y=0;label=1;}
+            border G2(t=zcopy,zcopy+1  ){x=5-t; y=0;label=2;}
+            border G3(t=zcopy+1,5. ){x=5-t; y=0;label=1;}
+
+            mesh Th = buildmesh(G1(-50)  + G4(-20)+ G5(-10) + G6(-20) + G7(-50)+ G2(-10)+ G3(-20) + G8(-20));
+
+            fespace Vh(Th, P1); //P1 conforming triangular FEM
+            Vh u, w;
+
+                solve Laplace(u, w)
+                = int2d(Th)(
+                dx(u)*dx(w)
+                + dy(u)*dy(w)
+                )
+                + on(2, u=T2)
+                + on(3, u  =T1)
+                ;
+
+            real ecartype=sqrt(abs((int2d(Th)(u*u)/25.)-((int2d(Th)(u)/25.)*(int2d(Th)(u))/25.)));
+            //cout << "moyenne:" << tmean << endl;
+            //plot(u, value=true, fill=true, wait=true, hsv=colorhsv);  
+            return ecartype;         
+        }
+
+    }
+    if(6.5<z){
+        if(z<=9.5){
+
+            zcopy=z-6.;
+            //radiateur a gauche
+
+            border G1(t=0.,zcopy  ){x=0; y=t;label=1;}
+            border G2(t=zcopy,zcopy+1  ){x=0; y=t;label=2;}
+            border G3(t=zcopy+1,5. ){x=0; y=t;label=1;}
+            border G4(t=0., 2. ){x=t; y=5;label=1;}
+            border G5(t=2., 3. ){x=t; y=5;label=3;}
+            border G6(t=3.,5.){x=t; y=5;label=1;}
+            border G7(t=0.,5. ){x=5.; y=5-t;label=1;}
+            border G8(t=0.,5. ){x=5-t;y=0;label=1;}
+    
+            mesh Th = buildmesh(G1(-10) + G2(-10)+ G3(-10) + G4(-20)+ G5(-10) + G6(-20) + G7(-50) + G8(-50));
+
+            fespace Vh(Th, P1); //P1 conforming triangular FEM
+            Vh u, w;
+
+                solve Laplace(u, w)
+                = int2d(Th)(
+                dx(u)*dx(w)
+                + dy(u)*dy(w)
+                )
+                + on(2, u=T2)
+                + on(3, u  =T1)
+                ;
+
+            real ecartype=sqrt(abs((int2d(Th)(u*u)/25.)-((int2d(Th)(u)/25.)*(int2d(Th)(u))/25.)));
+            //cout << "moyenne:" << tmean << endl;
+            //plot(u, value=true, fill=true, wait=true, hsv=colorhsv);
+            return ecartype;
+
+        }
+    }
+    if(z>9.5){
+
+        zcopy=z-9.;
+        //radiateur en haut a gauche
+
+        border G1(t=0.,5  ){x=0; y=t;label=1;}
+        border G4(t=0., zcopy ){x=t; y=5;label=1;}
+        border G2(t=zcopy,zcopy+1  ){x=t; y=5;label=2;}
+        border G3(t=zcopy+1,2 ){x=t; y=5;label=1;}
+      
+        border G5(t=2., 3. ){x=t; y=5;label=3;}
+        border G6(t=3.,5.){x=t; y=5;label=1;}
+        border G7(t=0.,5. ){x=5.; y=5-t;label=1;}
+        border G8(t=0.,5. ){x=5-t;y=0;label=1;}
+ 
+        mesh Th = buildmesh(G1(-50) + G4(-5)+ G2(-10)+ G3(-5) + G5(-10) + G6(-20) + G7(-50) + G8(-50));
+
+        fespace Vh(Th, P1); //P1 conforming triangular FEM
+        Vh u, w;
+
+            solve Laplace(u, w)
+            = int2d(Th)(
+            dx(u)*dx(w)
+            + dy(u)*dy(w)
+            )
+            + on(2, u=T2)
+            + on(3, u  =T1)
+            ;
+
+        real ecartype=sqrt(abs((int2d(Th)(u*u)/25.)-((int2d(Th)(u)/25.)*(int2d(Th)(u))/25.)));
+        
+        //cout << "moyenne:" << tmean << endl;
+        //plot(u, value=true, fill=true, wait=true, hsv=colorhsv);        
+        return ecartype;
+
+    }
+
+
+    
+}
+
+
+
+real valtest;
+valtest=f(0.1);
+
+// int n=100;
+// real [int] ecartableau(n-1);         //La taille du tableau
+// real [int] ztableau(n-1);
+// real s;
+// real h=1./n;
+
+// for(int i = 1; i <100; ++i){
+//     s=10*i*h;
+//     ztableau(i-1)=s;
+//     ecartableau(i-1)=f(s);
+//     cout << "increment: " << i << endl;
+
+// }
+
+// { // File for gnuplot
+//     ofstream gnu("plot.gp");
+//     for (int i = 0; i < n-1; i++)
+//         gnu << ztableau[i] << " " << ecartableau[i] << endl;
+//         //gnu << ztableau[i] << " " << enertableau[i] << endl;
+// }
+
+// exec("echo 'plot \"plot.gp\" w l \n pause 5 \n set term postscript \n set output \"gnuplot.eps\" \n replot \n quit' | gnuplot");
